@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0a1428">
+  <meta name="description" content="Fale e marque. Sua agenda Google por voz.">
+  <title>Secretária</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <div class="aurora" aria-hidden="true"></div>
+
+  <header class="topo">
+    <button id="btn-contatos" class="botao-icone" type="button" aria-label="Contatos">
+      <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><circle cx="12" cy="8" r="3.4"/><path d="M5 19.5c.8-3.4 3.6-5 7-5s6.2 1.6 7 5"/></svg>
+    </button>
+    <img src="logo.png" alt="SPEC, your virtual secretary" class="logo-topo">
+    <button id="btn-conta" class="chip-conta" type="button">Entrar</button>
+  </header>
+
+  <main>
+
+    <!-- ============ TELA PRINCIPAL ============ -->
+    <section id="tela-principal" class="tela ativa">
+      <p class="orientacao">Toque no microfone e diga algo como:</p>
+      <p class="exemplo" id="frase-exemplo">"reunião com o João dia 20 às 15h no escritório"</p>
+
+      <div class="palco-mic">
+        <div class="anel anel-1" aria-hidden="true"></div>
+        <div class="anel anel-2" aria-hidden="true"></div>
+        <button id="btn-mic" class="botao-mic" type="button" aria-label="Falar compromisso">
+          <svg viewBox="0 0 24 24" width="44" height="44" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="9" y="3" width="6" height="11" rx="3"/>
+            <path d="M5.5 11.5a6.5 6.5 0 0 0 13 0"/>
+            <path d="M12 18v3"/>
+          </svg>
+        </button>
+      </div>
+      <p id="status-mic" class="status-mic">Toque para falar</p>
+
+      <div class="vidro caixa-texto">
+        <label for="campo-frase" class="rotulo">Ou digite (o microfone do teclado também funciona)</label>
+        <textarea id="campo-frase" rows="2" placeholder="reunião com a Maria amanhã às 10h" autocomplete="off" autocapitalize="sentences"></textarea>
+        <button id="btn-interpretar" class="botao-primario" type="button">Entender a frase</button>
+      </div>
+
+      <button id="btn-demo" class="botao-fantasma" type="button">Ver demonstração sem login</button>
+    </section>
+
+    <!-- ============ CARTÃO DE REVISÃO ============ -->
+    <section id="tela-revisao" class="tela">
+      <button class="voltar" data-voltar type="button">‹ Voltar</button>
+      <h2>Confira antes de marcar</h2>
+      <p class="subtexto">O entendimento pode falhar. Ajuste o que precisar.</p>
+
+      <div class="vidro cartao">
+        <div class="campo">
+          <label for="rev-titulo">Título</label>
+          <input id="rev-titulo" type="text" autocomplete="off">
+        </div>
+        <div class="linha-dupla">
+          <div class="campo">
+            <label for="rev-data">Data</label>
+            <input id="rev-data" type="date">
+          </div>
+          <div class="campo">
+            <label for="rev-hora">Hora</label>
+            <input id="rev-hora" type="time">
+          </div>
+        </div>
+        <div class="linha-dupla">
+          <div class="campo">
+            <label for="rev-duracao">Duração</label>
+            <select id="rev-duracao">
+              <option value="30">30 minutos</option>
+              <option value="60" selected>1 hora</option>
+              <option value="90">1h30</option>
+              <option value="120">2 horas</option>
+              <option value="180">3 horas</option>
+            </select>
+          </div>
+          <div class="campo">
+            <label for="rev-local">Local</label>
+            <input id="rev-local" type="text" placeholder="opcional" autocomplete="off">
+          </div>
+        </div>
+
+        <div class="campo">
+          <label>Participantes</label>
+          <div id="lista-participantes" class="participantes"></div>
+          <button id="btn-add-participante" class="botao-discreto" type="button">+ Adicionar participante</button>
+        </div>
+      </div>
+
+      <div id="aviso-convites" class="aviso-convites" hidden></div>
+
+      <button id="btn-marcar" class="botao-primario grande" type="button">Marcar</button>
+      <p id="erro-revisao" class="erro" role="alert" hidden></p>
+    </section>
+
+    <!-- ============ SUCESSO ============ -->
+    <section id="tela-sucesso" class="tela">
+      <div class="sucesso-icone" aria-hidden="true">
+        <svg viewBox="0 0 24 24" width="40" height="40" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 12.5l5 5 10-11"/></svg>
+      </div>
+      <h2 id="sucesso-titulo">Marcado!</h2>
+      <div class="vidro resumo" id="sucesso-resumo"></div>
+      <a id="sucesso-link" class="botao-fantasma" target="_blank" rel="noopener" hidden>Abrir no Google Agenda</a>
+      <button id="btn-novo" class="botao-primario grande" type="button">Marcar outro</button>
+    </section>
+
+    <!-- ============ CONTATOS ============ -->
+    <section id="tela-contatos" class="tela">
+      <button class="voltar" data-voltar type="button">‹ Voltar</button>
+      <h2>Contatos</h2>
+      <p class="subtexto">Nomes que você fala viram estes e-mails.</p>
+
+      <div class="vidro cartao">
+        <div class="linha-dupla">
+          <div class="campo">
+            <label for="novo-nome">Nome</label>
+            <input id="novo-nome" type="text" placeholder="João" autocomplete="off">
+          </div>
+          <div class="campo">
+            <label for="novo-email">E-mail</label>
+            <input id="novo-email" type="email" placeholder="joao@email.com" autocomplete="off">
+          </div>
+        </div>
+        <button id="btn-salvar-contato" class="botao-primario" type="button">Salvar contato</button>
+      </div>
+
+      <div id="lista-contatos" class="lista-contatos"></div>
+    </section>
+
+  </main>
+
+  <div id="faixa-demo" class="faixa-demo" hidden>Modo demonstração. Nada será criado de verdade. <button id="btn-sair-demo" type="button">Sair</button></div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="parser.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
