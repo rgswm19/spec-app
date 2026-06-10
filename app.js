@@ -106,6 +106,7 @@ var FUSO = 'America/Sao_Paulo';
 
   function pararDeOuvir() {
     ouvindo = false;
+    if (window.SpecOrb) SpecOrb.vuOff();
     document.querySelector('.palco-mic').classList.remove('escutando');
     $('status-mic').textContent = 'Toque para falar';
     if (rec) { try { rec.stop(); } catch (e) { } }
@@ -127,6 +128,7 @@ var FUSO = 'America/Sao_Paulo';
     rec.continuous = false;
 
     rec.onstart = function () {
+      if (window.SpecOrb) { SpecOrb.pulse(0.6); SpecOrb.vuOn(); }
       ouvindo = true;
       document.querySelector('.palco-mic').classList.add('escutando');
       $('status-mic').textContent = 'Ouvindo... fale agora';
@@ -138,6 +140,7 @@ var FUSO = 'America/Sao_Paulo';
         texto += ev.results[i][0].transcript;
       }
       $('campo-frase').value = texto;
+      if (window.SpecOrb) SpecOrb.pulse(0.5);
       if (ev.results[ev.results.length - 1].isFinal) {
         pararDeOuvir();
         interpretarFrase();
@@ -175,6 +178,10 @@ var FUSO = 'America/Sao_Paulo';
     preencherRevisao(r);
     mostrarTela('tela-revisao');
   }
+
+  $('campo-frase').addEventListener('input', function () {
+    if (window.SpecOrb) SpecOrb.pulse(0.35);
+  });
 
   $('btn-interpretar').addEventListener('click', interpretarFrase);
   $('campo-frase').addEventListener('keydown', function (ev) {
@@ -503,6 +510,7 @@ var FUSO = 'America/Sao_Paulo';
       link.hidden = true;
     }
 
+    if (window.SpecOrb) SpecOrb.pulse(1);
     $('campo-frase').value = '';
     mostrarTela('tela-sucesso');
   }

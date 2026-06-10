@@ -4,8 +4,8 @@
    ============================================================ */
 
 :root {
-  --fundo: #0a1428;
-  --fundo-2: #0d1b36;
+  --fundo: #04060c;
+  --fundo-2: #070b16;
   --vidro: rgba(148, 184, 255, 0.07);
   --vidro-borda: rgba(148, 184, 255, 0.16);
   --texto: #e8eefb;
@@ -42,9 +42,20 @@ body {
   inset: 0;
   z-index: -1;
   background:
-    radial-gradient(60% 45% at 50% -5%, rgba(61, 139, 255, 0.22), transparent 70%),
-    radial-gradient(40% 35% at 85% 80%, rgba(34, 84, 170, 0.20), transparent 70%),
+    radial-gradient(60% 45% at 50% -5%, rgba(61, 139, 255, 0.08), transparent 70%),
+    radial-gradient(40% 35% at 85% 80%, rgba(34, 84, 170, 0.07), transparent 70%),
     linear-gradient(180deg, var(--fundo) 0%, var(--fundo-2) 100%);
+}
+
+#orbe {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: min(100vw, 520px);
+  height: min(100vw, 520px);
+  z-index: 0;
+  pointer-events: none;
 }
 
 /* ---------- Topo ---------- */
@@ -62,10 +73,11 @@ body {
 .topo .chip-conta { justify-self: end; }
 
 .logo-topo {
-  height: 74px;
+  height: 38px;
   width: auto;
   display: block;
-  filter: drop-shadow(0 4px 14px rgba(90, 169, 255, 0.30));
+  opacity: 0.95;
+  filter: drop-shadow(0 2px 8px rgba(90, 169, 255, 0.25));
   user-select: none;
   -webkit-user-drag: none;
 }
@@ -119,7 +131,13 @@ main {
   to { opacity: 1; transform: none; }
 }
 
-h2 { font-size: 1.5rem; font-weight: 800; margin: 6px 0 4px; }
+h2 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  margin: 6px 0 4px;
+}
 .subtexto { color: var(--texto-suave); margin: 0 0 18px; font-size: 0.95rem; }
 
 .voltar {
@@ -139,13 +157,15 @@ h2 { font-size: 1.5rem; font-weight: 800; margin: 6px 0 4px; }
   text-align: center;
   color: var(--texto-suave);
   margin: 22px 0 6px;
-  font-size: 0.95rem;
+  font-size: 0.855rem;
 }
 
 .exemplo {
+  font-family: 'Fraunces', Georgia, serif;
+  font-style: italic;
   text-align: center;
   color: var(--texto);
-  font-weight: 600;
+  font-weight: 500;
   margin: 0 0 10px;
   min-height: 2.6em;
   font-size: 1.02rem;
@@ -156,6 +176,7 @@ h2 { font-size: 1.5rem; font-weight: 800; margin: 6px 0 4px; }
 /* O herói: orbe de microfone */
 .palco-mic {
   position: relative;
+  overflow: visible;
   width: 220px;
   height: 220px;
   margin: 8px auto 0;
@@ -166,26 +187,45 @@ h2 { font-size: 1.5rem; font-weight: 800; margin: 6px 0 4px; }
 .botao-mic {
   position: relative;
   z-index: 2;
-  width: 124px;
-  height: 124px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border: 1px solid rgba(160, 200, 255, 0.35);
-  background:
-    radial-gradient(circle at 32% 28%, rgba(255, 255, 255, 0.18), transparent 55%),
-    linear-gradient(160deg, rgba(90, 169, 255, 0.35), rgba(20, 50, 110, 0.55));
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  color: #dcebff;
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: #ffffff;
   cursor: pointer;
-  box-shadow:
-    0 18px 50px rgba(20, 70, 170, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-  transition: transform 0.15s ease;
+  box-shadow: 0 0 26px rgba(125, 140, 255, 0.22);
+  transition: transform 0.15s ease, box-shadow 0.3s ease;
+}
+
+/* anel em degradê com centro vazado: o orbe aparece dentro */
+.botao-mic::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  padding: 3px;
+  background: linear-gradient(135deg, #5aa9ff 0%, #7d8cff 55%, #b07bff 100%);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  pointer-events: none;
+}
+
+.botao-mic svg {
+  position: relative;
+  z-index: 1;
+  width: 38px;
+  height: 38px;
+  filter: drop-shadow(0 1px 6px rgba(0, 0, 0, 0.85));
 }
 
 .botao-mic:active { transform: scale(0.95); }
 
 .anel {
+  z-index: 1;
   position: absolute;
   border-radius: 50%;
   border: 1px solid rgba(90, 169, 255, 0.25);
@@ -196,8 +236,15 @@ h2 { font-size: 1.5rem; font-weight: 800; margin: 6px 0 4px; }
 .escutando .anel { animation: pulso 1.8s ease-out infinite; opacity: 1; }
 .escutando .anel-2 { animation-delay: 0.9s; }
 .escutando .botao-mic {
-  border-color: rgba(120, 200, 255, 0.7);
-  box-shadow: 0 0 60px var(--acento-brilho), inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  box-shadow:
+    0 0 46px rgba(125, 140, 255, 0.55),
+    0 0 90px rgba(176, 123, 255, 0.3);
+  animation: anel-vivo 1.6s ease-in-out infinite;
+}
+
+@keyframes anel-vivo {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 @keyframes pulso {
@@ -236,6 +283,7 @@ h2 { font-size: 1.5rem; font-weight: 800; margin: 6px 0 4px; }
   font-size: 0.82rem;
   color: var(--texto-suave);
   margin-bottom: 8px;
+  padding-left: 15px;
 }
 
 textarea, input, select {
@@ -275,13 +323,13 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   padding: 15px;
   border: none;
   border-radius: 16px;
-  background: linear-gradient(140deg, var(--acento), var(--acento-forte));
+  background: linear-gradient(135deg, #5aa9ff 0%, #7d8cff 55%, #b07bff 100%);
   color: #06122b;
   font-family: var(--fonte);
   font-size: 1.02rem;
   font-weight: 800;
   cursor: pointer;
-  box-shadow: 0 10px 28px rgba(61, 139, 255, 0.35);
+  box-shadow: 0 10px 28px rgba(125, 110, 255, 0.35);
   transition: transform 0.12s ease, opacity 0.2s;
 }
 
@@ -330,6 +378,7 @@ input[type="date"], input[type="time"] { color-scheme: dark; }
   text-transform: uppercase;
   letter-spacing: 0.06em;
   margin-bottom: 7px;
+  padding-left: 15px;
 }
 
 .linha-dupla {
@@ -502,5 +551,5 @@ button:focus-visible, a:focus-visible {
 
 @media (min-width: 480px) {
   .palco-mic { width: 250px; height: 250px; }
-  .botao-mic { width: 140px; height: 140px; }
+  .botao-mic { width: 108px; height: 108px; }
 }
