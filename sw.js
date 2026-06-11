@@ -2,7 +2,7 @@
    Guarda a casca do app para abrir rápido e funcionar offline.
    Chamadas ao Google (login e agenda) nunca passam pelo cache. */
 
-var CACHE = 'secretaria-v3';
+var CACHE = 'secretaria-v4';
 var ARQUIVOS = [
   './',
   './index.html',

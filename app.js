@@ -383,12 +383,14 @@ var FUSO = 'America/Sao_Paulo';
       scope: ESCOPO,
       callback: function (resp) {
         if (resp.error) {
-          toast('Login cancelado ou negado');
+          try { localStorage.removeItem('secretaria.conectado'); } catch (e) { }
+          toast('Login cancelado ou negado. Toque de novo para reconectar.');
           travarBotao(false);
           return;
         }
         estado.token = resp.access_token;
         estado.tokenExpira = Date.now() + (resp.expires_in - 60) * 1000;
+        try { localStorage.setItem('secretaria.conectado', '1'); } catch (e) { }
         $('btn-conta').textContent = 'Conectado';
         $('btn-conta').classList.add('logado');
         if (estado.acaoPosLogin) {
@@ -415,7 +417,9 @@ var FUSO = 'America/Sao_Paulo';
       return;
     }
     estado.acaoPosLogin = depois;
-    tc.requestAccessToken({ prompt: estado.token ? '' : 'consent' });
+    var jaConectou = false;
+    try { jaConectou = localStorage.getItem('secretaria.conectado') === '1'; } catch (e) { }
+    tc.requestAccessToken({ prompt: (estado.token || jaConectou) ? '' : 'consent' });
   }
 
   function criarEventoGoogle(corpo, enviarConvites, ok, falhou) {
